@@ -1,0 +1,9 @@
+VAR_GLOBAL{}
+DECLARATION{
+    INTEGER b;
+    INTEGER b;
+}
+INSTRUCTION{
+A=1;
+b=b/0;
+}
