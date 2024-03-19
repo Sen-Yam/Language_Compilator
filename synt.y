@@ -124,7 +124,7 @@ main ()
     yyparse();
    // AFFICHER_TABLE_KEY();
    // AFFICHER_TABLE_OP(); 
-   // AFFICHER_TABLE_VAR();
+    AFFICHER_TABLE_VAR();
 }
 yywrap(){} 
 
