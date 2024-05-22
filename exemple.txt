@@ -6,11 +6,13 @@ INTEGER X;
 INTEGER A;
 }
 INSTRUCTION{
+A=1;
+IF(A<4){
+A=A+(5*A);
+}
+ELSE{
+A=A*2;
 
-IF(A<1){
-    A=1;
-}ELSE {
-    A=1;
 }
 
 

@@ -2,6 +2,7 @@
 #include<stdlib.h>
 #include<stdbool.h>
 #include<string.h>
+
 extern int qc;
 extern char Chaine[20];
 typedef struct quadr{
@@ -12,7 +13,7 @@ typedef struct quadr{
     struct quadr* suivant;
 }quadr,*pquadr;
 
-pquadr Tete=NULL;
+ pquadr Tete=NULL;
  int i=1;
 extern int fin_if;
 extern int qc_if[10000];
@@ -25,6 +26,9 @@ extern int j;
 extern int J;
 
 void AJOUTER_QUAD(char Op[20] , char Op1[20] , char Op2[20],char Res[20]) {
+   
+   /*  printf(" oppppp%s",Op2);
+    printf(" oppppp%s",Res); */
     if(Tete==NULL) {
     Tete=(quadr*)malloc(sizeof(quadr));
     strcpy(Tete->operateur,Op);
@@ -33,7 +37,8 @@ void AJOUTER_QUAD(char Op[20] , char Op1[20] , char Op2[20],char Res[20]) {
     strcpy(Tete->resultat,Res);
     Tete->suivant=NULL;
     }
-    else {   
+    else {
+           
     pquadr P;
     P=(quadr*)malloc(sizeof(quadr));
     strcpy(P->operateur,Op);
@@ -95,4 +100,20 @@ void MODIFIER_QUAD(int Pos,int Champ , char Val[20]){
     }
      printf("\n********************************************************\n\n");
 } 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

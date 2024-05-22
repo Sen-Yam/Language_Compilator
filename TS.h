@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <string.h>
 
+
 #define TABLE_SIZE 300
 
 typedef struct Variable
@@ -46,7 +47,7 @@ typedef struct ListOp
     struct ListOp *suivant;
 } ListOp, *PlistOp;
 
-PHashNode HashTable[TABLE_SIZE] = {NULL};
+ PHashNode HashTable[TABLE_SIZE] = {NULL};
 PlistKey TeteKey = NULL;
 PlistOp TeteOp = NULL;
 
@@ -187,9 +188,9 @@ void AFFICHER_TABLE_VAR()
 {
 
     printf("\n********************TABLE DES VARIABLES********************\n");
-    printf(" _______________________________________________\n");
-    printf("|   NomEntite   |  CodeEntite   |  TypeEntite   |\n");
-    printf("|_______________|_______________|_______________|\n");
+    printf(" _______________________________________________________________\n");
+    printf("|   NomEntite   |  CodeEntite   |  TypeEntite   |   ValEntite   |\n");
+    printf("|_______________|_______________|_______________|_______________|\n");
     int compteur = 0;
     int i;
     for (i = 0; i < TABLE_SIZE; i++)
@@ -198,7 +199,7 @@ void AFFICHER_TABLE_VAR()
         while (P != NULL)
         {
             compteur++;
-            printf("|%14s |%14s |%14s|\n", P->Var.Name, P->Var.Code, P->Var.Type);
+            printf("|%14s |%14s |%14s|%14s\n", P->Var.Name, P->Var.Code, P->Var.Type, P->Var.Val);
             P = P->suivant;
         }
     }
@@ -321,5 +322,70 @@ void INSERTION_TYPE_IDF(char Name[20], char Type[20])
     if (Q != NULL)
     {
         strcpy(Q->Var.Type, Type);
+    }
+}
+
+
+
+
+void INSERTION_VALUE_IDF(char Name[20], char Val[20])
+{
+    int index = hashFunction(Name);
+    PHashNode P = HashTable[index];
+    int Found = 0;
+    PHashNode Q = NULL;
+    while (P != NULL && Found == 0)
+    {
+        if (strcmp(P->Var.Name, Name) == 0)
+        {
+            Found = 1;
+            Q = P;
+        }
+        else
+        {
+            P = P->suivant;
+        }
+    }
+    if (Q != NULL)
+    {
+        strcpy(Q->Var.Val, Val);
+    }
+}
+
+
+
+int GET_VALUE_IDF(char Name[20])
+{   char Val[20];
+int a=0;
+    int index = hashFunction(Name);
+    PHashNode P = HashTable[index];
+    int Found = 0;
+    PHashNode Q = NULL;
+
+    
+
+
+    while (P != NULL && Found == 0)
+    {
+        if (strcmp(P->Var.Name, Name) == 0)
+        {
+            Found = 1;
+            Q = P;
+        }
+        else
+        {
+            P = P->suivant;
+        }
+    }
+    if (Q != NULL)
+    { 
+        strcpy(Val,Q->Var.Val);
+        a=atoi(Val);
+           
+        return a;
+    }
+    else {
+        printf("Identifier %s not found in hash table.\n", Name);
+        return 0; // Or some other appropriate error value
     }
 }

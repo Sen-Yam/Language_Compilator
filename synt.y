@@ -1,6 +1,10 @@
 %{  
     #include<string.h>
       #include "routine.h"
+        #include"pile.h"
+      /*   #include"code.h" */
+      
+       
     int nb_ligne=1,col=1;
     int op;
     int constante;
@@ -15,12 +19,17 @@
     int J=-1;
     int Q=-1;
     int K;
+    char quad1 [20];
     char Chaine[20];
+    char Chaine1[20];
+    char Chaine2[20];
+    char Chaine3[20];
     int S=-1;
     int bzw[10000];
     int brw[10000];
     int finw[10000];
     int debw[10000];
+    int op1,op2,tmp;
     
 %}
 %union{  
@@ -92,7 +101,7 @@ D:WHILE ouvrp condition ferp /*R1*/{
     AJOUTER_QUAD("BZ", "fin_while","temp.cond","vide");/* debw */
     Q++;
      bzw[Q]=qc;
-    AJOUTER_QUAD("oper.inst.while", "op1.inst","op2.inst","temp.inst");
+    
   
 } ;
 
@@ -112,23 +121,60 @@ INST_Basic:entree_sortie|AFFECTATION
 
 condition:not condition|COND_CMP|COND_LOG|not IDF
 ;
-COND_CMP:OPERANDE OP_CMP 
+COND_CMP:OPERANDE OP_CMP
 ;
-OP_CMP:sup{op=1;}OPERANDE
-|supEg{op=1;}OPERANDE
-|inf{op=1;}OPERANDE
-|infEg{op=1;}OPERANDE
-|egl{op=1;}OPERANDE
-|diff{op=1;}OPERANDE
+OP_CMP:sup{op=1;}OPERANDE{
+	strcpy(quad1,"BLE");
+}
+|supEg{op=1;strcpy(quad1,"BL");}OPERANDE
+|inf{op=1;strcpy(quad1,"BGE");}OPERANDE
+|infEg{op=1;strcpy(quad1,"BG");}OPERANDE
+|egl{op=1;strcpy(quad1,"BNZ");}OPERANDE
+|diff{op=1;strcpy(quad1,"BZ");}OPERANDE
 ;
 
-AFFECTATION:OPERANDE aff OPERANDE pvg
+AFFECTATION:IDF aff OPERANDE pvg{
+   
+ op1=Depiler();
+ sprintf(Chaine,"%d",op1);    
+  INSERTION_VALUE_IDF($1,Chaine); 
+   AJOUTER_QUAD("=",Chaine ,"vide",$1);
+}
 ;
 
-INST_AR:OPERANDE add OPERANDE{op=1;}
-|OPERANDE sous OPERANDE{op=1;}
-|OPERANDE mul OPERANDE{op=1;}
-|OPERANDE divs OPERANDE{op=0;}
+INST_AR:OPERANDE add OPERANDE{op=1;
+   op2=Depiler();op1=Depiler();  tmp = op1+op2;
+    Empiler(tmp);  
+     sprintf(Chaine1,"%d",op1);
+     sprintf(Chaine2,"%d",op2);
+    
+       AJOUTER_QUAD("+", Chaine1,Chaine2,Chaine3);
+
+}
+|OPERANDE sous OPERANDE{op=1;
+   op2=Depiler();op1=Depiler();  tmp = op1-op2;
+    Empiler(tmp);  
+     sprintf(Chaine1,"%d",op1);
+     sprintf(Chaine2,"%d",op2);
+     sprintf(Chaine3,"%d",tmp);
+       AJOUTER_QUAD("-", Chaine1,Chaine2,Chaine3);
+}
+|OPERANDE mul OPERANDE{op=1;
+   op2=Depiler();op1=Depiler();  tmp = op1*op2;
+    Empiler(tmp);  
+     sprintf(Chaine1,"%d",op1);
+     sprintf(Chaine2,"%d",op2);
+     sprintf(Chaine3,"%d",tmp);
+       AJOUTER_QUAD("*", Chaine1,Chaine2,Chaine3);
+}
+|OPERANDE divs OPERANDE{op=0;
+   op2=Depiler();op1=Depiler();  tmp = op1/op2;
+    Empiler(tmp);  
+     sprintf(Chaine1,"%d",op1);
+     sprintf(Chaine2,"%d",op2);
+     sprintf(Chaine3,"%d",tmp);
+       AJOUTER_QUAD("/", Chaine1,Chaine2,Chaine3);
+}
 ;
 INST_IF:B ELSE bloc_instructions {  /* R3 */
      fin_if=qc+1;
@@ -137,23 +183,16 @@ INST_IF:B ELSE bloc_instructions {  /* R3 */
      for(K=0;K<=j;K++){
              sprintf(Chaine,"%d",fin_if);
         MODIFIER_QUAD(qc_if[K],2,Chaine);
-        MODIFIER_QUAD(1,2,"op1.cond");
            
     }
     }
 }
 
 B:A bloc_instructions {  /* R2 */
-               AJOUTER_QUAD("oper.inst1", "op1.inst1","op2.inst1","temp.inst1");
                 j++;
         qc_if[j]=qc+1;
-    // creer le BR Fin
     AJOUTER_QUAD("BR", "fin_if","vide","vide");
-    //sauvegarder le qc 
-    //qc_if[j]=qc;   
-    
-      AJOUTER_QUAD("oper.inst2", "op1.inst2","op2.inst2","temp.inst2");
-    deb_else=qc;
+    deb_else=qc+1;
     
     //mettre a jour le quadr BZ de A (R1)
     sprintf(Chaine,"%d",deb_else);
@@ -163,8 +202,10 @@ B:A bloc_instructions {  /* R2 */
 ;
 A:IF ouvrp condition ferp { /* R1 */
       // creer le quadr BZ  
-    AJOUTER_QUAD("oper.cond.if", "op1.con","op2.cond","temp.cond");
-    AJOUTER_QUAD("BZ", "deb_else","temp.cond","vide");
+    /* AJOUTER_QUAD("oper.cond.if", "op1.con","op2.cond","temp.cond"); */
+  
+  
+    AJOUTER_QUAD(quad1 , "deb_else","vide","temp.cond");
     //sauvegarder le qc
     qc_bz=qc;
 }
@@ -176,16 +217,24 @@ OP_LOG:and|or
 ;
 
 
-element:IDF{if(NOT_DECLARED($1)==1){
+element:IDF{
+    tmp=GET_VALUE_IDF($1);
+    Empiler(tmp);  
+    if(NOT_DECLARED($1)==1){
     printf("\nerreur semantique , idf non declaree a la ligne %d\n",nb_ligne);
 }
 }
 |INTEGER{
+  
+    Empiler($1);  
+   
+     
     if(op==0 && $1==0){
         printf("erreur semantique: division par zero a la ligne %d\n",nb_ligne);
     } 
     }
-|FLOAT|INST_AR|AFFECTATION|COND_CMP
+|FLOAT{/* Empiler($1); */}
+|INST_AR|AFFECTATION|COND_CMP
 |IDF ouvrc IDF ferc
 ;
 OPERANDE:element|ouvrp element ferp;
@@ -202,6 +251,8 @@ main ()
   /*   AFFICHER_TABLE_KEY();
     AFFICHER_TABLE_OP(); 
     AFFICHER_TABLE_VAR(); */
+   
     AFFICHER_QUAD();
+   /*   assembler();  */
 }
 yywrap(){} 

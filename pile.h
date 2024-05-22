@@ -4,22 +4,21 @@
 
 
 //déclaration de la Pile CETTE PILE EST POUR LE TRAITEMENT DES EXPRESSION ARITHMETIQUE
-typedef float Telm;
 typedef struct EPile* Pile;
-typedef struct EPile { Telm  Val; Pile Suiv;} CelluleP;
+typedef struct EPile { int  Val; Pile Suiv;} CelluleP;
 
 
-Pile pile_tmps;
+Pile pile_tmps=NULL;
 
 
 //primitives des Piles
 //procedure Initpile
 
-void Initpile()
-{pile_tmps=NULL;}
+/* void Initpile()
+{pile_tmps=NULL;} */
 
 //procedure Empiler
-void Empiler(Telm x)
+void Empiler(int x)
 {Pile V;
  V=malloc(sizeof(CelluleP));
  V->Val=x;
@@ -28,9 +27,9 @@ void Empiler(Telm x)
 }
 
 //procedure Depiler
-float Depiler()
+int Depiler()
 {Pile V;
- float x;
+ int x;
  x= pile_tmps->Val;
  V=pile_tmps;
  pile_tmps=(pile_tmps)->Suiv;
@@ -46,7 +45,7 @@ int Pilevide()
 }
 
 //Fonction SommetPile
-Telm SommetPile(){
+floatSommetPile(){
     if(Pilevide()){printf(" WARNING LA PILE EST VIDE \n");return -1;}
     else{return pile_tmps->Val;}
 
@@ -57,7 +56,7 @@ void Afficher_pile(){
     printf("\n============================================ etat pile ==========================");
     while(V!=NULL){
         
-        printf(" \ntmps valeur : %lf ",V->Val);
+        printf(" \ntmps valeur : %d ",V->Val);
         V= V->Suiv;
     }
 }
@@ -70,7 +69,7 @@ void Afficher_pile(){
 
 Pile pile_sauv_maj;
 
-void Empiler_sm(Telm x)
+void Empiler_sm(floatx)
 {Pile V;
  V=malloc(sizeof(CelluleP));
  V->Val=x;
@@ -80,9 +79,9 @@ void Empiler_sm(Telm x)
 }
 
 //procedure Depiler
-float Depiler_sm()
+int Depiler_sm()
 {Pile V;
- float x;
+ int x;
  x= pile_sauv_maj->Val;
  V=pile_tmps;
  pile_sauv_maj=(pile_sauv_maj)->Suiv;
