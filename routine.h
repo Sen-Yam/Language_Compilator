@@ -14,11 +14,12 @@ typedef struct quadr{
 
 pquadr Tete=NULL;
  int i=1;
-extern int fin_if[10000];
+extern int fin_if;
 extern int qc_if[10000];
 extern int debw[10000];
 extern int finw[10000];
 extern int bzw[10000];
+extern int brw[10000];
 extern int K;
 extern int j;
 extern int J;
@@ -49,23 +50,6 @@ void AJOUTER_QUAD(char Op[20] , char Op1[20] , char Op2[20],char Res[20]) {
     }
     qc++;
     i=qc;
-    if(strcmp( Op, "oper.inst1")==0) {
-        j++;
-        qc_if[j]=qc+1;
-    }
-    if(strcmp(Op , "oper.inst.while")==0) {
-        finw[J]=qc+1;
-    }
-    if(strcmp(Op , "oper.inst2")==0) {
-        fin_if[j]=qc+1;
-    }
-    if(strcmp(Op1 , "fin_while")==0) {
-        bzw[J]=qc;
-    }
-    if(strcmp(Op , "oper.cond.while")==0) {
-        J++;
-        debw[J]=qc;
-    }
 } 
 
 void MODIFIER_CHAMP(int Champ , pquadr P,char Val[20]) {
@@ -101,7 +85,7 @@ void MODIFIER_QUAD(int Pos,int Champ , char Val[20]){
 
 
  void AFFICHER_QUAD() {
-    printf("\n\n ********LES QUADRUPLES SONT :**********\n");
+    printf("\n\n ***************LES QUADRUPLES SONT :***************\n");
     pquadr P=Tete;
     int K=1;
     while(P!=NULL && K<=i) {
@@ -109,5 +93,6 @@ void MODIFIER_QUAD(int Pos,int Champ , char Val[20]){
         P=P->suivant;
         K++; 
     }
+     printf("\n********************************************************\n\n");
 } 
 
