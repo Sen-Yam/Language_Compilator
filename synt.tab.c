@@ -71,7 +71,7 @@
 #line 1 "synt.y"
   
     #include<string.h>
-      #include "routine.h"
+    /*   #include "routine.c" */
         #include"pile.h"
       /*   #include"code.h" */
       
@@ -2036,11 +2036,11 @@ int yyerror(char *msg)
 main () 
 {
     yyparse();
-  /*   AFFICHER_TABLE_KEY();
+    AFFICHER_TABLE_KEY();
     AFFICHER_TABLE_OP(); 
-    AFFICHER_TABLE_VAR(); */
+    AFFICHER_TABLE_VAR();
    
     AFFICHER_QUAD();
-   /*   assembler();  */
+      assembler();  
 }
 yywrap(){} 

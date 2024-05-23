@@ -1,5 +1,5 @@
-#include "TS.h"
-
+#include "TS.c"
+#include "routine.c"
 
 
 void assembler(){
